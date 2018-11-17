@@ -1,0 +1,5 @@
+cloudflare_ddns.py filter=git-crypt diff=git-crypt
+ddns.yaml filter=git-crypt diff=git-crypt
+*.pem filter=git-crypt diff=git-crypt
+*.key filter=git-crypt diff=git-crypt
+99-misc/* filter=git-crypt diff=git-crypt

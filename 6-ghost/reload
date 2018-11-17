@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+clear
+
+kubectl delete -f ghost.yaml > /dev/null
+kubectl apply -f ghost.yaml > /dev/null
+
+sleep 5
+
+echo -e "# SVC"
+kubectl get svc -o wide | grep blog
+echo -e "\n# PO"
+kubectl get po -o wide | grep blog
+echo -e "\n# ING"
+kubectl get ing -o wide | grep blog
+echo -e "\n"

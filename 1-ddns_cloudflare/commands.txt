@@ -1,0 +1,11 @@
+kubectl label nodes glassfish home.stack/host=glassfish
+kubectl get nodes --show-labels
+
+kubectl apply -f ddns.yaml
+kubectl get pods -n home-stack -o wide
+
+kubectl -n home-stack describe pods ddns-7db5d8f68-89frx
+kubectl -n home-stack get events
+
+kubectl -n home-stack logs ddns-58d9455d94-r5kfc -c ddns
+kubectl -n home-stack logs -f ddns-58d9455d94-r5kfc

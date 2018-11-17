@@ -1,0 +1,1 @@
+*/1 * * * * /root/ddns/cloudflare_ddns.py >> /proc/1/fd/1

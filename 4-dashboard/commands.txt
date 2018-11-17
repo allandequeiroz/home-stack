@@ -1,0 +1,10 @@
+#kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard-arm.yaml
+kubectl apply -f dashboard.yaml
+
+#master node
+kubectl proxy
+
+#remote
+ssh -v -t -L 8001:localhost:8001 root@boss
+http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/overview
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard | awk '{print $1}')

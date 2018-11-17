@@ -1,0 +1,22 @@
+kubeadm reset && rm -fr ~/.kube/config && kubeadm init
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+export KUBECONFIG=$HOME/.kube/config
+
+# Weave Net, pod network
+export kubever=$(kubectl version | base64 | tr -d '\n')
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$kubever"
+
+# kubeadm join WHATEVER:6443 --token WHATEVER --discovery-token-ca-cert-hash WHATEVER
+
+kubectl apply -f namespace.yaml
+
+# Debug - https://kubernetes.io/docs/reference/kubectl/cheatsheet/ku
+get pods -o wide --all-namespaces
+kubectl -n kube-system describe pods kubernetes-dashboard-77fd78f978-ndr2d
+kubectl -n kube-system get events
+kubectl -n kube-system logs kubernetes-dashboard-77fd78f978-6p8t7 -c kubernetes-dashboard
+
+kubeadm token create --print-join-command

@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: blog-controller
+  labels:
+    app: blog
+    k8s-app: traefik-ingress-lb
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: blog
+      k8s-app: traefik-ingress-lb
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-lb
+        app: blog
+    spec:
+      containers:
+      - name: ghost
+        image: allandequeiroz/ghost-the-shell:arm
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 2368
+        volumeMounts:
+        - name: ghost-database
+          mountPath: /var/www/ghost/content/data
+        - name: ghost-configuration
+          mountPath: /var/www/ghost/config.production.json
+      restartPolicy: Always
+      volumes:
+      - name: ghost-database
+        hostPath:
+          path: /nas/ghost
+      - name: ghost-configuration
+        hostPath:
+          path: /nas/home-stack/6-ghost/conf/config.production.json
+          type: File
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog
+spec:
+  selector:
+    k8s-app: traefik-ingress-lb
+    app: blog
+  ports:
+    - port: 2368
+      targetPort: 2368
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.232
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: blog
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+#    traefik.frontend.rule.type: "PathPrefixStrip"
+    traefik.ingress.kubernetes.io/preserve-host: "true"
+spec:
+  rules:
+  - host: blog.allandequeiroz.com
+    http:
+      paths:
+      - backend:
+          serviceName: blog
+          servicePort: 2368

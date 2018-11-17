@@ -1,0 +1,20 @@
+kubectl create -f deployment.yaml
+kubectl create -f service.yaml
+kubectl describe pods ghost
+kubectl describe pods ghost-5b6dfc5655-tjzq2
+ubectl get svc
+kubectl exec ghost-7bb6b9d8fc-lld72 -- curl -s http://10.96.242.61:2368
+
+kubectl delete po --all
+kubectl delete po ghost-7bb6b9d8fc-lld72
+kubectl exec ghost-7bb6b9d8fc-lld72 env
+kubectl exec ddns-fc95dbbbf-vmtqp -- curl -v -o /dev/null ghost-service.default.svc.cluster.local:2368
+kubectl exec -it ghost-7bb6b9d8fc-hxlmc bash
+
+kubectl describe svc ghost-service
+kubectl get endpoints ghost-service
+
+kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
+https://kubernetes.io/docs/reference/kubectl/jsonpath/
+
+kubectl create -f ingress.yaml
