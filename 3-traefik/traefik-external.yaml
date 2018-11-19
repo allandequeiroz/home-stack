@@ -30,7 +30,6 @@ spec:
          - name: admin
            containerPort: 8080
         args:
-        - --api
         - --configfile=/config/traefik.toml
         livenessProbe:
           httpGet:
@@ -102,7 +101,7 @@ metadata:
   name: traefik-ingress-lb-external
   namespace: kube-system
   labels:
-    traffic-type: internal
+    traffic-type: external
 spec:
   rules:
   - host: traefik.external.allandequeiroz.com

@@ -23,7 +23,6 @@ logLevel = "INFO"
     debug = true
 
 [kubernetes]
-  # Only create ingresses where the object has traffic-type: external label
   labelselector = "traffic-type=external"
 
 [metrics]

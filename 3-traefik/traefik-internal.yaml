@@ -30,8 +30,6 @@ spec:
          - name: admin
            containerPort: 8080
         args:
-        - --api
-        - --kubernetes
         - --configfile=/etc/traefik/traefik.toml
         livenessProbe:
           httpGet:
@@ -90,6 +88,8 @@ kind: Ingress
 metadata:
   name: traefik-ingress-lb
   namespace: kube-system
+  labels:
+    traffic-type: internal
 spec:
   rules:
   - host: traefik.internal.allandequeiroz.com

@@ -33,6 +33,7 @@ InsecureSkipVerify = true
 #  address = ":8080"
 
 [kubernetes]
+  labelselector = "traffic-type=internal"
 
 [metrics]
   [metrics.prometheus]
