@@ -1,20 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: traefik-ingress-controller-external
+  name: traefik-ingress-controller
   namespace: kube-system
   labels:
-    k8s-app: traefik-ingress-lb-external
+    k8s-app: traefik-ingress-lb
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-lb-external
+      k8s-app: traefik-ingress-lb
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb-external
-        name: traefik-ingress-lb-external
+        k8s-app: traefik-ingress-lb
+        name: traefik-ingress-lb
     spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
@@ -30,34 +30,22 @@ spec:
          - name: admin
            containerPort: 8080
         args:
-        - --configfile=/config/traefik.toml
+        - --configfile=/etc/traefik/traefik.toml
         livenessProbe:
           httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 180
+            path: /ping
+            port: 80
+          initialDelaySeconds: 3
           periodSeconds: 3
           timeoutSeconds: 1
-#        resources:
-#          requests:
-#            cpu: 100m
-#            memory: 64Mi
-#          limits:
-#            cpu: 200m
-#            memory: 256Mi
         volumeMounts:
         - name: config
           mountPath: /etc/traefik/traefik.toml
-        - name: certs
-          mountPath: /certs
       volumes:
       - name: config
         hostPath:
-          path: /nas/home-stack/3-traefik/traefik-external.toml
+          path: /nas/home-stack/3-traefik/traefik-internal.toml
           type: File
-      - name: certs
-        hostPath:
-          path: /nas/home-stack/3-traefik/certs
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -71,16 +59,16 @@ spec:
                   - boss
               topologyKey: kubernetes.io/hostname
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  name: traefik-ingress-service-external
+  name: traefik-ingress-service
   namespace: kube-system
   labels:
     k8s-app: traefik-ingress-lb
 spec:
   selector:
-    k8s-app: traefik-ingress-lb-external
+    k8s-app: traefik-ingress-lb
   externalTrafficPolicy: Local
   ports:
     - protocol: TCP
@@ -93,21 +81,21 @@ spec:
       port: 8080
       name: admin
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.231
+  loadBalancerIP: 192.168.1.230
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: traefik-ingress-lb-external
+  name: traefik-ingress-lb
   namespace: kube-system
   labels:
-    traffic-type: external
+    traffic-type: internal
 spec:
   rules:
-  - host: traefik.external.allandequeiroz.com
+  - host: traefik.internal.allandequeiroz.com
     http:
       paths:
       - path: /
         backend:
-          serviceName: traefik-ingress-service-external
+          serviceName: traefik-ingress-service
           servicePort: admin

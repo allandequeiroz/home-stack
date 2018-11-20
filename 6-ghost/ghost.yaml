@@ -49,24 +49,25 @@ spec:
     k8s-app: traefik-ingress-lb
     app: blog
   ports:
-    - port: 2368
+    - port: 80
       targetPort: 2368
-  type: LoadBalancer
-  loadBalancerIP: 192.168.1.232
+#  type: LoadBalancer
+#  loadBalancerIP: 192.168.1.232
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: blog
+  labels:
+    traffic-type: internal
   annotations:
     kubernetes.io/ingress.class: "traefik"
-#    traefik.frontend.rule.type: "PathPrefixStrip"
-    traefik.ingress.kubernetes.io/preserve-host: "true"
+    traefik.frontend.rule.type: "ReplacePathRegex: ^/blog(/.*) /$1"
 spec:
   rules:
-  - host: blog.allandequeiroz.com
+  - host: allandequeiroz.com
     http:
       paths:
       - backend:
           serviceName: blog
-          servicePort: 2368
+          servicePort: 80
