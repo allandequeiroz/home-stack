@@ -51,6 +51,7 @@ spec:
   ports:
     - port: 80
       targetPort: 2368
+  type: NodePort
 #  type: LoadBalancer
 #  loadBalancerIP: 192.168.1.232
 ---
@@ -61,13 +62,14 @@ metadata:
   labels:
     traffic-type: internal
   annotations:
-    kubernetes.io/ingress.class: "traefik"
-    traefik.frontend.rule.type: "ReplacePathRegex: ^/blog(/.*) /$1"
+    kubernetes.io/ingress.class: traefik
+    traefik.frontend.rule.type: PathPrefixStrip
 spec:
   rules:
   - host: allandequeiroz.com
     http:
       paths:
-      - backend:
+      - path: /blog
+        backend:
           serviceName: blog
           servicePort: 80
