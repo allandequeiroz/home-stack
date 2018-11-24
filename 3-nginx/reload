@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# https://github.com/nginxinc/kubernetes-ingress/blob/master/docs/installation.md
+
+clear
+
+kubectl delete -f nginx-fallback.yaml > /dev/null
+kubectl delete -f nginx-internal.yaml > /dev/null
+kubectl delete -f nginx-rbac.yaml > /dev/null
+#kubectl delete namespace nginx-ingress
+
+kubectl apply -f nginx-rbac.yaml > /dev/null
+kubectl apply -f nginx-internal.yaml > /dev/null
+kubectl apply -f nginx-fallback.yaml > /dev/null
+
+sleep 5
+
+echo -e "# SVC"
+kubectl -n nginx-ingress get svc -o wide | grep nginx
+echo -e "\n# PO"
+kubectl -n nginx-ingress get po -o wide | grep nginx
+echo -e "\n# ING"
+kubectl -n nginx-ingress get ing -o wide | grep nginx
+echo -e "\n"
