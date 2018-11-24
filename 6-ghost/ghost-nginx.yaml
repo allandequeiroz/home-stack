@@ -4,7 +4,6 @@ metadata:
   name: blog-controller
   labels:
     app: blog
-    k8s-app: traefik-ingress-lb
 spec:
   replicas: 1
   strategy:
@@ -12,11 +11,9 @@ spec:
   selector:
     matchLabels:
       app: blog
-      k8s-app: traefik-ingress-lb
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-lb
         app: blog
     spec:
       containers:
@@ -46,24 +43,17 @@ metadata:
   name: blog
 spec:
   selector:
-    k8s-app: traefik-ingress-lb
     app: blog
   ports:
     - port: 80
       targetPort: 2368
-  type: NodePort
-#  type: LoadBalancer
-#  loadBalancerIP: 192.168.1.232
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: blog
-  labels:
-    traffic-type: internal
   annotations:
-    kubernetes.io/ingress.class: traefik
-    traefik.frontend.rule.type: PathPrefixStrip
+    kubernetes.io/ingress.class: "nginx"
 spec:
   rules:
   - host: allandequeiroz.com

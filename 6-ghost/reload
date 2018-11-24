@@ -1,9 +1,37 @@
 #!/usr/bin/env bash
 
+traefik=false
+nginx=false
+
+for i in "$@"
+do
+    case ${i} in
+        -t | --traefik )        push=true
+                                ;;
+        -n | --nginx )          parameters="${parameters} --squash"
+                                ;;
+        -h | --help )           echo -e "Usage : ./reload [OPTIONS]"
+                                echo -e "\t-t | --traefik      Use Traefik configurations"
+                                echo -e "\t-n | --nginx        Use NGinx configurations"
+                                exit 0
+                                ;;
+    esac
+    shift
+done
+
 clear
 
-kubectl delete -f ghost.yaml > /dev/null
-kubectl apply -f ghost.yaml > /dev/null
+if [ ${traefik} == true ]; then
+    kubectl delete -f ghost-traefik.yaml > /dev/null
+    kubectl apply -f ghost-traefik.yaml > /dev/null
+
+elif [ ${nginx} == true ]; then
+    kubectl delete -f ghost-nginx.yaml > /dev/null
+    kubectl apply -f ghost-nginx.yaml > /dev/null
+else
+    echo "I don't know what to do, choose Traefik (./reload -t) or Nginx (./reload -n)"
+    exit 1
+fi
 
 sleep 5
 
