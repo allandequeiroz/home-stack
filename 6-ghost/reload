@@ -6,9 +6,9 @@ nginx=false
 for i in "$@"
 do
     case ${i} in
-        -t | --traefik )        push=true
+        -t | --traefik )        traefik=true
                                 ;;
-        -n | --nginx )          parameters="${parameters} --squash"
+        -n | --nginx )          nginx=false
                                 ;;
         -h | --help )           echo -e "Usage : ./reload [OPTIONS]"
                                 echo -e "\t-t | --traefik      Use Traefik configurations"

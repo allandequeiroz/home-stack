@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+clear
+
+kubectl delete -f ddns.yaml > /dev/null
+
+kubectl apply -f ddns.yaml > /dev/null
+
+sleep 5
+
+echo -e "# Deployments"
+kubectl get deploy -o wide | grep ddns
+echo -e "\n# PO"
+kubectl get po -o wide | grep ddns

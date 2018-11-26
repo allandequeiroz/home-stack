@@ -42,3 +42,5 @@ InsecureSkipVerify = true
 
 [ping]
 entryPoint = "http"
+
+[accessLog]
