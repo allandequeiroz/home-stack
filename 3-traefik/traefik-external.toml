@@ -39,12 +39,12 @@ entryPoint = "http"
 #  endpoint = "consul-traefik-consul.kube-system.svc:8500"
 #  watch = true
 #  prefix = "traefik-external"
-
-[acme]
-  email = "allandequeiroz@gmail.com"
-  storage = "traefik-external-certificates/acme/account"
-  acmeLogging = true
-  entryPoint = "https"
-  OnHostRule = true
-  [acme.httpChallenge]
-    entryPoint="http"
+#
+#[acme]
+#  email = "allandequeiroz@gmail.com"
+#  storage = "traefik-external-certificates/acme/account"
+#  acmeLogging = true
+#  entryPoint = "https"
+#  OnHostRule = true
+#  [acme.httpChallenge]
+#    entryPoint="http"

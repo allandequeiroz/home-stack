@@ -30,7 +30,7 @@ spec:
          - name: admin
            containerPort: 8080
         args:
-        - --configfile=/config/traefik.toml
+        - --configfile=/etc/traefik/traefik.toml
         livenessProbe:
           httpGet:
             path: /health
@@ -81,7 +81,6 @@ metadata:
 spec:
   selector:
     k8s-app: traefik-ingress-lb-external
-  externalTrafficPolicy: Local
   ports:
     - protocol: TCP
       port: 80
@@ -94,6 +93,7 @@ spec:
       name: admin
   type: LoadBalancer
   loadBalancerIP: 192.168.1.231
+  externalTrafficPolicy: Local
 #---
 #apiVersion: extensions/v1beta1
 #kind: Ingress

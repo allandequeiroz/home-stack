@@ -57,7 +57,7 @@ kind: Ingress
 metadata:
   name: blog
   labels:
-    traffic-type: internal
+    traffic-type: external
   annotations:
     kubernetes.io/ingress.class: traefik
 spec:

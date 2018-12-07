@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+clear
+
+kubectl delete -f metallb.yaml
+kubectl apply -f metallb.yaml
+
+sleep 5
+
+kubectl -n metallb-system get deployments -o wide
