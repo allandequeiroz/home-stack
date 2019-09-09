@@ -1,4 +1,4 @@
-# kubeadm reset && rm -fr ~/.kube/config && kubeadm init
+kubeadm reset && rm -fr ~/.kube/config && kubeadm init
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
