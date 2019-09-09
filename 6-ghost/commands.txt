@@ -17,4 +17,4 @@ kubectl get endpoints ghost-service
 kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}'
 https://kubernetes.io/docs/reference/kubectl/jsonpath/
 
-kubectl create -f ingress.yaml
+kubectl logs -f blog-controller-7d588f7b5-lrs64

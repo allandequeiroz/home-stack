@@ -1,0 +1,5 @@
+k -n kube-system get all -o wide | grep traefik
+
+kubectl -n kube-system logs -f traefik-ingress-controller-external-b49d56c48-kq48f
+
+

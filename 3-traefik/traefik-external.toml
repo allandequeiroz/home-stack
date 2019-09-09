@@ -1,6 +1,6 @@
 defaultEntryPoints = ["http","https"]
-debug = false
-logLevel = "INFO"
+debug = true
+logLevel = "DEBUG"
 
 #Config to redirect http to https
 [entryPoints]

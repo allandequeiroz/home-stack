@@ -19,7 +19,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik
+      - image: traefik:alpine
         name: traefik-ingress-lb
         imagePullPolicy: IfNotPresent
         ports:
@@ -33,9 +33,9 @@ spec:
         - --configfile=/etc/traefik/traefik.toml
         livenessProbe:
           httpGet:
-            path: /ping
-            port: 80
-          initialDelaySeconds: 3
+            path: /health
+            port: 8080
+          initialDelaySeconds: 180
           periodSeconds: 3
           timeoutSeconds: 1
         volumeMounts:
@@ -80,8 +80,8 @@ spec:
       port: 8080
       name: admin
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.230
-  externalTrafficPolicy: Local
+  loadBalancerIP: 192.168.1.200
+  externalTrafficPolicy: Cluster
 #---
 #apiVersion: extensions/v1beta1
 #kind: Ingress

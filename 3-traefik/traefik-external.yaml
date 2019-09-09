@@ -19,7 +19,7 @@ spec:
       serviceAccountName: traefik-ingress-controller
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik
+      - image: traefik:alpine
         name: traefik-ingress-lb
         imagePullPolicy: IfNotPresent
         ports:
@@ -92,8 +92,8 @@ spec:
       port: 8080
       name: admin
   type: LoadBalancer
-  loadBalancerIP: 192.168.1.231
-  externalTrafficPolicy: Local
+  loadBalancerIP: 192.168.1.201
+  externalTrafficPolicy: Cluster
 #---
 #apiVersion: extensions/v1beta1
 #kind: Ingress
