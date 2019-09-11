@@ -1,4 +1,11 @@
-kubeadm reset && rm -fr ~/.kube/config && kubeadm init
+apt install ipvsadm
+
+kubeadm reset && rm -fr ~/.kube/config
+
+iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+ipvsadm --clear
+
+kubeadm init
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config

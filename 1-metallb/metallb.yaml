@@ -7,7 +7,7 @@ metadata:
 data:
   config: |
     address-pools:
-    - name: home-stack
+    - name: default
       protocol: layer2
       avoid-buggy-ips: true
       addresses:

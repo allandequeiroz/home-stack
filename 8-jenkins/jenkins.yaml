@@ -1,0 +1,90 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: jenkins-master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: jenkins-master
+    spec:
+      containers:
+      - name: jenkins-leader
+        image: allandequeiroz/jenkins
+        env:
+          - name: JAVA_OPTS
+            value: -Djenkins.install.runSetupWizard=false
+          # - name: JENKINS_OPTS
+            # value: --prefix=/jenkins  
+        ports:
+          - name: http-port
+            containerPort: 8080
+          - name: jnlp-port
+            containerPort: 50000
+        volumeMounts:
+          - name: jenkins-home
+            mountPath: /var/jenkins_home
+          - name: docker-sock-volume
+            mountPath: /var/run/docker.sock  
+      # tolerations:
+      # - key: "node-role.kubernetes.io/master"
+      #   effect: "NoSchedule"
+      #   operator: "Exists"        
+      nodeSelector:
+        jenkins: master
+      volumes:
+      - name: jenkins-home
+        hostPath:
+          path: /nas/jenkins
+      - name: docker-sock-volume
+        hostPath:
+          path: /var/run/docker.sock            
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: jenkins-master-svc
+# spec:
+#   externalTrafficPolicy: Cluster
+#   type: LoadBalancer
+#   ports:
+#   - port: 8080
+#     targetPort: 8080
+#     name: master
+#   selector:
+#     app: jenkins-master
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: jenkins-jnlp-svc
+# spec:
+#   type: ClusterIP
+#   ports:
+#   - port: 50000
+#     targetPort: 50000
+#     name: slave
+#   selector:
+#     app: jenkins-master    
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-master-svc
+  labels:
+    app: jenkins-master
+spec:
+  type: NodePort
+  ports:
+  - nodePort: 30000
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  - port: 50000
+    targetPort: 50000
+    protocol: TCP
+    name: slave
+  selector:
+    app: jenkins-master

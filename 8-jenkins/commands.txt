@@ -1,0 +1,39 @@
+# https://www.blazemeter.com/blog/how-to-setup-scalable-jenkins-on-top-of-a-kubernetes-cluster/
+# https://dzone.com/articles/scaling-jenkins-with-kubernetes
+# https://medium.com/@ipuustin/using-metallb-as-kubernetes-load-balancer-with-ubiquiti-edgerouter-7ff680e9dca3
+
+kubectl label nodes boss jenkins=master
+kubectl label nodes naked jenkins=slave
+kubectl label nodes snowflake jenkins=slave
+
+kubectl describe node "boss"
+kubectl describe node "naked"
+kubectl describe node "snowflake"
+
+docker build -t allandequeiroz/jenkins:2.60.1
+
+kubectl apply -f jenkins.yaml
+
+kubectl cluster-info | grep master
+kubectl get pods | grep jenkins
+kubectl describe pod jenkins-7f55c59948-szbpx
+
+kubectl delete -f jenkins.yaml > /dev/null
+
+# --all-namespaces
+
+kubectl config view
+
+kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep admin-user | awk '{print $1}')
+
+# Create Jenkins Service Account - https://stackoverflow.com/questions/48827345/kubernetes-jenkins-integration
+kubectl -n <your-namespace> create sa jenkins
+kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=<your-namespace>:jenkins
+kubectl get -n <your-namespace> sa/jenkins --template='{{range .secrets}}{{ .name }} {{end}}' | xargs -n 1 kubectl -n <your-namespace> get secret --template='{{ if .data.token }}{{ .data.token }}{{end}}' | head -n 1 | base64 -d -
+
+kubectl -n default create sa jenkins
+kubectl create clusterrolebinding jenkins --clusterrole cluster-admin --serviceaccount=default:jenkins
+kubectl get -n default sa/jenkins --template='{{range .secrets}}{{ .name }} {{end}}' | xargs -n 1 kubectl -n default get secret --template='{{ if .data.token }}{{ .data.token }}{{end}}' | head -n 1 | base64 -d -
+
+slave=$(kubectl get pod | grep jenkins | grep slave | awk '{ print $1 }') ; echo -e "\nInspecting ${slave}\n" ;  kubectl describe pod ${slave} ; kubectl logs -f ${slave} jnlp
+
